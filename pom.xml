@@ -2,9 +2,9 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.tuempresa</groupId>
-    <artifactId>backend-mobile</artifactId>
-    <version>1.0.0</version>
+    <groupId>com.hackudc</groupId>
+    <artifactId>backend</artifactId>
+    <version>0.1</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
