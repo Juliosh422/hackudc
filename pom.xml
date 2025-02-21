@@ -2,9 +2,9 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.hackudc</groupId>
-    <artifactId>backend</artifactId>
-    <version>0.1</version>
+    <groupId>com.tuempresa</groupId>
+    <artifactId>backend-mobile</artifactId>
+    <version>1.0.0</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -13,31 +13,38 @@
     </parent>
 
     <dependencies>
-        <!-- Spring Boot Web (REST) -->
+        <!-- Spring Boot Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- Cliente HTTP para llamar a APIs externas -->
+        <!-- Cliente HTTP para llamadas a la API -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
-        <!-- Procesamiento JSON -->
+        <!-- OAuth2 para autenticación con la API de Inditex -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+        </dependency>
+
+        <!-- Lombok para reducir código -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- JSON Processing -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
-
-        <!-- Lombok (opcional, para reducir código boilerplate) -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
     </dependencies>
+
 
     <build>
         <plugins>
