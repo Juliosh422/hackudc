@@ -1,0 +1,20 @@
+server:
+  port: 8080
+  address: 0.0.0.0
+  servlet:
+    context-path: /
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          inditex:
+            provider: inditex
+            client-id: "oauth-mkplace-oauthzqbuyihxwhmfvdtvizpropro"
+            client-secret: "~dRzP3bw/f/Zj35~"
+            authorization-grant-type: client_credentials
+            scope: technology.catalog.read
+        provider:
+          inditex:
+            token-uri: "https://auth.inditex.com:443/openam/oauth2/itxid/itxidmp/access_token"

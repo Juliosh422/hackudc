@@ -9,53 +9,25 @@ interface ResultsScreenProps {
     route: ResultsScreenRouteProp;
 }
 
-const exampleProducts = [
-    {
-        id: "367022517",
-        name: "GEOMETRIC JACQUARD SHIRT",
-        price: {
-            currency: "EUR",
-            value: {
-                current: 29.95
-            }
-        },
-        link: "https://www.zara.com/es/en/geometric-jacquard-shirt-p01618475.html?v1=367022517",
-        brand: "zara"
-    },
-    {
-        id: "367196402",
-        name: "METALLIC THREAD RUSTIC SHIRT",
-        price: {
-            currency: "EUR",
-            value: {
-                current: 15.99,
-                original: 27.95
-            }
-        },
-        link: "https://www.zara.com/es/en/metallic-thread-rustic-shirt-p02298151.html?v1=367196402",
-        brand: "zara"
-    }
-];
-
 const ResultsScreen: React.FC<ResultsScreenProps> = ({ route }) => {
-    const { imageUri } = route.params;
+    const { imageUri, products } = route.params;
 
     const handleShare = async () => {
         try {
-            const message = exampleProducts.map(product =>
+            const message = products.map(product =>
                 `${product.name}: ${product.link}`
             ).join('\n\n');
 
             await Share.share({
-                message: `Check out these fashion finds I discovered:\n\n${message}`,
-                title: 'Share Products'
+                message: message,
+                title: 'Check out these similar products!'
             });
         } catch (error) {
             console.error('Error sharing:', error);
         }
     };
 
-    const renderProductItem = ({ item }: { item: typeof exampleProducts[0] }) => (
+    const renderProductItem = ({ item }: { item: typeof products[0] }) => (
         <View style={styles.productCard}>
             <Text style={styles.productName}>{item.name}</Text>
             <Text style={styles.brand}>{item.brand.toUpperCase()}</Text>
@@ -90,17 +62,21 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ route }) => {
                     <Text style={styles.resultsTitle}>Similar Products</Text>
                     <TouchableOpacity onPress={handleShare}>
                         <Image
-                            source={require('../assets/share-icon.png')} // Replace with the path to your PNG file
+                            source={require('../assets/share-icon.png')}
                             style={styles.shareIcon}
                         />
                     </TouchableOpacity>
                 </View>
 
-                {exampleProducts.map((product) => (
-                    <View key={product.id}>
-                        {renderProductItem({ item: product })}
-                    </View>
-                ))}
+                {products.length === 0 ? (
+                    <Text style={styles.noResultsText}>No matching products found</Text>
+                ) : (
+                    products.map((product) => (
+                        <View key={product.id}>
+                            {renderProductItem({ item: product })}
+                        </View>
+                    ))
+                )}
             </ScrollView>
         </View>
     );
@@ -194,6 +170,12 @@ const styles = StyleSheet.create({
         width: 24,
         height: 24,
         resizeMode: 'contain',
+    },
+    noResultsText: {
+        fontSize: 18,
+        color: '#95A5A6',
+        textAlign: 'center',
+        marginVertical: 20,
     },
 });
 

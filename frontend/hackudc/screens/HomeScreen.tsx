@@ -8,6 +8,7 @@ import {
     PermissionsAndroid,
     Alert,
     Text,
+    ActivityIndicator
 } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { useNavigation } from '@react-navigation/native';
@@ -20,6 +21,7 @@ type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 const HomeScreen = () => {
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [cameraReady, setCameraReady] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const navigation = useNavigation<HomeScreenNavigationProp>();
     const cameraRef = useRef<RNCamera | null>(null);
 
@@ -65,14 +67,43 @@ const HomeScreen = () => {
         });
     };
 
-    const handleSend = () => {
+    const handleSend = async () => { // Make async
         if (selectedImage) {
-            navigation.navigate('Results', { imageUri: selectedImage });
+            setIsLoading(true);
+            try {
+                // const imageToSend = selectedImage || 'https://fotografiaprincipiantes.wordpress.com/wp-content/uploads/2015/11/image17.png';
+                const imageToSend = 'https://fotografiaprincipiantes.wordpress.com/wp-content/uploads/2015/11/image17.png';
+
+                const encodedImage = encodeURIComponent(imageToSend);
+
+                const response = await fetch(
+                    `http://10.20.27.122:8080/api/search?imageUrl=${encodedImage}`
+                );
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                const result = await response.json();
+                navigation.navigate('Results', {
+                    imageUri: selectedImage,
+                    products: result // Pass API result to results screen
+                });
+            } catch (error) {
+                Alert.alert('Error', 'Couldn\'t load results. Please try again.');
+                console.error('API Error:', error);
+            } finally {
+                setIsLoading(false);
+            }
         }
     };
 
     return (
         <View style={styles.container}>
+            {isLoading && (
+                <View style={styles.loadingOverlay}>
+                    <ActivityIndicator size="large" color="white" />
+                    <Text style={styles.loadingText}>Searching for matches...</Text>
+                </View>
+            )}
             {!selectedImage ? (
                 <RNCamera
                     ref={cameraRef}
@@ -169,6 +200,22 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
         fontSize: 12,
+    },
+    loadingOverlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.7)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1000,
+    },
+    loadingText: {
+        color: 'white',
+        fontSize: 18,
+        marginTop: 10,
     },
 });
 
