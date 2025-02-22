@@ -1,4 +1,4 @@
-package main.com.inditex.uploadimage;
+package com.inditex.uploadimage;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,6 +1,6 @@
-package main.com.inditex.uploadimage.controller;
+package com.inditex.uploadimage.controller;
 
-import main.com.inditex.uploadimage.service.ImgurUploaderService;
+import com.inditex.uploadimage.service.ImgurUploaderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
