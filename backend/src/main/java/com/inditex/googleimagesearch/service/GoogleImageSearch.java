@@ -9,11 +9,11 @@ import org.json.JSONObject;
 
 public class GoogleImageSearch {
 
-    public static String getImageFromGoogle(String query, String apiKey, String cx) throws IOException {
+    public static String getImageFromGoogle(String query) throws IOException {
         String urlString = "https://www.googleapis.com/customsearch/v1"
                 + "?q=" + query
-                + "&key=" + apiKey
-                + "&cx=" + cx
+                + "&key=AIzaSyCpETXaFFloAWcrud3N7JeXrk9uYZmG1nU"
+                + "&cx=018be8702677740fa"
                 + "&searchType=image"
                 + "&num=1";
 
