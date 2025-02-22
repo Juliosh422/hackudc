@@ -95,8 +95,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>3.1.5</version>
                 <configuration>
-                    <mainClass>main.com.inditex.uploadimage.UploadImageApplication.java</mainClass>
-
+                    <mainClass>main.com.inditex.uploadimage.UploadImageApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>
@@ -104,3 +103,4 @@
 
 
 </project>
+
