@@ -23,7 +23,7 @@ public class InditexApiClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        String body = "grant_type=client_credentials&client_id=" + clientId + "&client_secret=" + clientSecret;
+        String body = "grant_type=client_credentials&client_id=" + "oauth-mkplace-oauthzqbuyihxwhmfvdtvizpropro" + "&client_secret=" + "~dRzP3bw/f/Zj35~";
         HttpEntity<String> request = new HttpEntity<>(body, headers);
 
         ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
@@ -31,8 +31,8 @@ public class InditexApiClient {
     }
 
     public ResponseEntity<String> searchProducts(String imageUrl) {
-        String token = getAccessToken();
-        String apiUrl = "https://api.inditex.com/pubvsearch/products?image=" + imageUrl;
+        String token = "https://auth.inditex.com:443/openam/oauth2/itxid/itxidmp/access_token";
+        String apiUrl = "https://api.inditex.com/pubvsearch/products?image=" + "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.tous.com%2Fes-es%2Fcamiseta-de-manga-corta-negra-tous-mos-bears-lam%2Fp%2F295902506&psig=AOvVaw3emu-OI1ctpG1h9UBZGrkn&ust=1740272089389000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCJjGgu-I1osDFQAAAAAdAAAAABAI";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
