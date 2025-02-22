@@ -1,40 +1,34 @@
 package com.inditex.wishlist.service;
 
-import com.inditex.wishlist.model.Wishlist;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inditex.wishlist.model.Wishlist;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @Service
 public class WishlistStorageService {
-
-    private final String FILE_PATH = "wishlists.json";
+    private final String FILE_PATH = "wishlist.json"; // Nombre singular
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    // Cargar wishlists desde el archivo JSON
-    public List<Wishlist> loadWishlists() {
+    public Wishlist loadWishlist() {
         try {
             File file = new File(FILE_PATH);
             if (!file.exists()) {
-                return new ArrayList<>();
+                return new Wishlist(); // Retorna una wishlist vacía
             }
-            return objectMapper.readValue(file, new TypeReference<List<Wishlist>>() {});
+            return objectMapper.readValue(file, Wishlist.class); // Lee un objeto Wishlist
         } catch (IOException e) {
             e.printStackTrace();
-            return new ArrayList<>();
+            return new Wishlist();
         }
     }
 
-    // Guardar wishlists en el archivo JSON
-    public void saveWishlists(List<Wishlist> wishlists) {
+    public void saveWishlist(Wishlist wishlist) {
         try {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILE_PATH), wishlists);
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILE_PATH), wishlist);
         } catch (IOException e) {
             e.printStackTrace();
         }

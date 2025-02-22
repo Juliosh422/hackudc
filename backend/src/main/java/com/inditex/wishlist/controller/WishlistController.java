@@ -1,41 +1,43 @@
 package com.inditex.wishlist.controller;
 
+import com.inditex.wishlist.model.Product;
 import com.inditex.wishlist.model.Wishlist;
 import com.inditex.wishlist.service.WishlistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-
 @RestController
-@RequestMapping("/api/wishlists")
+@RequestMapping("/api/wishlist")
 public class WishlistController {
 
     @Autowired
     private WishlistService wishlistService;
 
+    // Obtener la wishlist completa
     @GetMapping
-    public List<Wishlist> getAllWishlists() {
-        return wishlistService.getAllWishlists();
+    public Wishlist getWishlist() {
+        return wishlistService.getWishlist();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Wishlist> getWishlistById(@PathVariable String id) {
-        Optional<Wishlist> wishlist = wishlistService.getWishlistById(id);
-        return wishlist.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    // Añadir un producto
+    @PostMapping("/products")
+    public ResponseEntity<String> addProduct(@RequestBody Product product) {
+        wishlistService.addProduct(product);
+        return ResponseEntity.ok("Producto añadido a la wishlist");
     }
 
-    @PostMapping
-    public ResponseEntity<String> addWishlist(@RequestBody Wishlist wishlist) {
-        wishlistService.addWishlist(wishlist);
-        return ResponseEntity.ok("Wishlist añadida con éxito");
+    // Eliminar un producto por ID
+    @DeleteMapping("/products/{productId}")
+    public ResponseEntity<String> removeProduct(@PathVariable String productId) {
+        wishlistService.removeProduct(productId);
+        return ResponseEntity.ok("Producto eliminado de la wishlist");
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> removeWishlist(@PathVariable String id) {
-        wishlistService.removeWishlist(id);
-        return ResponseEntity.ok("Wishlist eliminada con éxito");
+    // Vaciar toda la wishlist
+    @DeleteMapping
+    public ResponseEntity<String> clearWishlist() {
+        wishlistService.clearWishlist();
+        return ResponseEntity.ok("Wishlist vaciada");
     }
 }
