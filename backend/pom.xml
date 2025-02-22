@@ -21,54 +21,40 @@
     </properties>
 
     <dependencies>
-        <!-- WebFlux para llamadas reactivas (si no usas reactividad, podrías quitarlo) -->
+        <!-- Spring Web para RESTful APIs -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- OAuth2 para autenticación -->
+        <!-- OAuth2 para autenticación (si es necesario) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
 
-        <!-- Lombok para reducir boilerplate -->
+        <!-- Lombok para reducir código boilerplate -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
-        <!-- JSON Processing -->
+        <!-- Jackson para procesamiento de JSON -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
-
-
-
-            <!-- Jackson para JSON -->
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-            </dependency>
-
-            <!-- Lombok para reducir código boilerplate -->
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <scope>provided</scope>
-            </dependency>
-
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Plugin de Spring Boot para empaquetado y ejecución -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.inditex.wishlist.WishlistApplication</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>
