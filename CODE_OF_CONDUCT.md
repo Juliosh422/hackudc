@@ -1,13 +1,15 @@
-# Código de Conducta
+# Code of Conduct
 
-## 1. Comportamiento esperado
-- Ser amable y respetuoso con los demás..
-- Aceptar críticas constructivas con profesionalismo.
-- Evitar cualquier forma de acoso, intimidación o discriminación.
+## 1. Expected Behavior
+- Be kind and respectful to others.
+- Accept constructive criticism with professionalism.
+- Avoid any form of harassment, intimidation, or discrimination.
 
-## 2. Comportamiento inaceptable
-- Comentarios ofensivos o degradantes.
-- Publicación de información privada sin permiso.
-- Cualquier otro comportamiento que pueda ser considerado inapropiado en un entorno profesional.
+## 2. Unacceptable Behavior
+- Offensive or degrading comments.
+- Sharing private information without permission.
+- Any behavior that can be considered inappropriate in a professional setting.
+
+
 
 
