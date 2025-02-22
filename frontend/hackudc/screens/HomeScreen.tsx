@@ -1,27 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     StyleSheet,
-    Text,
     View,
     TouchableOpacity,
     Image,
-    TextInput,
     Platform,
     PermissionsAndroid,
     Alert,
+    Text,
 } from 'react-native';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { launchImageLibrary } from 'react-native-image-picker';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { RNCamera, TakePictureResponse } from 'react-native-camera';
 
-// Define the navigation prop type for HomeScreen
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
 const HomeScreen = () => {
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
-    const [text, setText] = useState('');
-    const navigation = useNavigation<HomeScreenNavigationProp>(); // Use the typed navigation prop
+    const [cameraReady, setCameraReady] = useState(false);
+    const navigation = useNavigation<HomeScreenNavigationProp>();
+    const cameraRef = useRef<RNCamera | null>(null);
+
+    useEffect(() => {
+        requestCameraPermission();
+    }, []);
 
     const requestCameraPermission = async () => {
         if (Platform.OS === 'android') {
@@ -29,106 +33,82 @@ const HomeScreen = () => {
                 const granted = await PermissionsAndroid.request(
                     PermissionsAndroid.PERMISSIONS.CAMERA,
                 );
-                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                    return true;
-                } else {
-                    Alert.alert('Permission Denied', 'Camera permission is required to take photos');
-                    return false;
+                if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+                    Alert.alert('Permission Denied', 'Camera permission is required');
                 }
             } catch (err) {
                 console.warn(err);
-                return false;
             }
         }
-        return true;
     };
 
-    const handleChoosePhoto = () => {
-        Alert.alert(
-            'Select Source',
-            'Choose an option',
-            [
-                {
-                    text: 'Camera',
-                    onPress: () => {
-                        requestCameraPermission().then(granted => {
-                            if (granted) {
-                                launchCamera({ mediaType: 'photo' }, (response) => {
-                                    if (
-                                        !response.didCancel &&
-                                        !response.errorCode &&
-                                        response.assets &&
-                                        response.assets.length > 0 &&
-                                        response.assets[0].uri
-                                    ) {
-                                        setSelectedImage(response.assets[0].uri);
-                                    } else {
-                                        setSelectedImage(null);
-                                    }
-                                });
-                            }
-                        });
-                    },
-                },
-                {
-                    text: 'Gallery',
-                    onPress: () => {
-                        launchImageLibrary({ mediaType: 'photo' }, (response) => {
-                            if (
-                                !response.didCancel &&
-                                !response.errorCode &&
-                                response.assets &&
-                                response.assets.length > 0 &&
-                                response.assets[0].uri
-                            ) {
-                                setSelectedImage(response.assets[0].uri);
-                            } else {
-                                setSelectedImage(null);
-                            }
-                        });
-                    },
-                },
-                { text: 'Cancel', style: 'cancel' },
-            ],
-            { cancelable: true },
-        );
+    const takePicture = async () => {
+        if (cameraRef.current && !selectedImage) {
+            const options = { quality: 0.5, base64: true };
+            const data: TakePictureResponse = await cameraRef.current.takePictureAsync(options);
+            setSelectedImage(data.uri);
+        } else {
+            setSelectedImage(null);
+        }
+    };
+
+    const handleChooseFromGallery = () => {
+        launchImageLibrary({ mediaType: 'photo' }, (response) => {
+            if (
+                !response.didCancel &&
+                !response.errorCode &&
+                response.assets &&
+                response.assets[0].uri
+            ) {
+                setSelectedImage(response.assets[0].uri);
+            }
+        });
     };
 
     const handleSend = () => {
-        // Navigate to the Results screen with parameters
-        navigation.navigate('Results', { imageUri: selectedImage, text });
+        if (selectedImage) {
+            navigation.navigate('Results', { imageUri: selectedImage });
+        }
     };
 
     return (
         <View style={styles.container}>
-            {/* Image Picker Section */}
-            <TouchableOpacity
-                style={styles.imageContainer}
-                onPress={handleChoosePhoto}>
-                {selectedImage ? (
-                    <Image source={{ uri: selectedImage }} style={styles.image} />
-                ) : (
-                    <Text style={styles.placeholderText}>
-                        Take a picture of the item or choose it from your gallery
-                    </Text>
-                )}
-            </TouchableOpacity>
-            {/* Text Input Section */}
-            <View style={styles.inputContainer}>
-                <TextInput
-                    style={styles.input}
-                    multiline
-                    maxLength={200}
-                    placeholder="Type your message here..."
-                    value={text}
-                    onChangeText={setText}
+            {!selectedImage ? (
+                <RNCamera
+                    ref={cameraRef}
+                    style={styles.camera}
+                    type={RNCamera.Constants.Type.back}
+                    onCameraReady={() => setCameraReady(true)}
+                    captureAudio={false}
                 />
-                <Text style={styles.charCounter}>{text.length}/200</Text>
+            ) : (
+                <Image source={{ uri: selectedImage }} style={styles.camera} />
+            )}
+
+            <View style={styles.controlsContainer}>
+                <TouchableOpacity
+                    style={styles.galleryButton}
+                    onPress={handleChooseFromGallery}>
+                    <Image source={require('../assets/gallery-icon.png')} style={styles.icon} />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={styles.shutterButton}
+                    onPress={takePicture}>
+                    {selectedImage && (
+                        <View style={styles.discardOverlay}>
+                            <Text style={styles.discardText}>X</Text>
+                        </View>
+                    )}
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={[styles.sendButton, !selectedImage && styles.disabledButton]}
+                    onPress={handleSend}
+                    disabled={!selectedImage}>
+                    <Image source={require('../assets/send-icon.png')} style={styles.icon} />
+                </TouchableOpacity>
             </View>
-            {/* Send Button */}
-            <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
-                <Text style={styles.sendButtonText}>Send</Text>
-            </TouchableOpacity>
         </View>
     );
 };
@@ -136,61 +116,59 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white',
+        backgroundColor: 'black',
     },
-    imageContainer: {
-        flex: 0.5,
-        margin: 20,
-        borderRadius: 20,
-        borderWidth: 2,
-        borderColor: '#cccccc',
+    camera: {
+        flex: 1,
+    },
+    controlsContainer: {
+        position: 'absolute',
+        bottom: 40,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        paddingHorizontal: 40,
+    },
+    shutterButton: {
+        width: 70,
+        height: 70,
+        borderRadius: 35,
+        backgroundColor: 'white',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f0f0f0',
     },
-    placeholderText: {
-        fontSize: 16,
-        color: '#666666',
-        textAlign: 'center',
-        paddingHorizontal: 20,
-    },
-    image: {
-        width: '100%',
-        height: '100%',
-        borderRadius: 18,
-    },
-    inputContainer: {
-        flex: 0.4,
-        marginHorizontal: 20,
-        marginTop: 10,
-    },
-    input: {
-        flex: 1,
-        borderWidth: 1,
-        borderColor: '#cccccc',
-        borderRadius: 10,
+    galleryButton: {
         padding: 15,
-        fontSize: 16,
-        textAlignVertical: 'top',
-    },
-    charCounter: {
-        alignSelf: 'flex-end',
-        color: '#666666',
-        fontSize: 12,
-        marginTop: 5,
     },
     sendButton: {
+        padding: 15,
         backgroundColor: '#2196F3',
         borderRadius: 25,
-        paddingVertical: 15,
-        paddingHorizontal: 40,
-        alignSelf: 'center',
-        marginVertical: 20,
     },
-    sendButtonText: {
+    disabledButton: {
+        opacity: 0.5,
+    },
+    icon: {
+        width: 30,
+        height: 30,
+        tintColor: 'white',
+    },
+    discardOverlay: {
+        position: 'absolute',
+        backgroundColor: 'red',
+        borderRadius: 10,
+        width: 20,
+        height: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        top: -5,
+        right: -5,
+    },
+    discardText: {
         color: 'white',
-        fontSize: 16,
         fontWeight: 'bold',
+        fontSize: 12,
     },
 });
 
