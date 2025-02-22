@@ -90,12 +90,17 @@
 
     <build>
         <plugins>
-            <!-- Plugin de Spring Boot para empaquetado y ejecución -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.1.5</version>
+                <configuration>
+                    <mainClass>main.com.inditex.uploadimage.UploadImageApplication.java</mainClass>
+
+                </configuration>
             </plugin>
         </plugins>
     </build>
+
 
 </project>
