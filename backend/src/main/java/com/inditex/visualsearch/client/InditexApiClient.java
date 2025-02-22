@@ -11,9 +11,9 @@ import java.util.Map;
 @Service
 public class InditexApiClient {
 
-    private static final String TOKEN_URL = "https://auth.inditex.com:443/openam/oauth2/itxid/itxidmp/sandbox/access_token";
-    private static final String CLIENT_ID = "oauth-mkpsbox-oauthgfnthzeijxojqexifhsnbxpro";
-    private static final String CLIENT_SECRET = "*IK.8S:WEo4oG[Hu"; // Asegúrate de guardarlo de forma segura
+    private static final String TOKEN_URL = "https://auth.inditex.com:443/openam/oauth2/itxid/itxidmp/access_token";
+    private static final String CLIENT_ID = "oauth-mkplace-oauthzqbuyihxwhmfvdtvizpropro";
+    private static final String CLIENT_SECRET = "~dRzP3bw/f/Zj35~"; // Asegúrate de guardarlo de forma segura
 
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -37,7 +37,7 @@ public class InditexApiClient {
 
     public ResponseEntity<String> searchProducts(String imageUrl) {
         String token = getAccessToken();
-        String apiUrl = "https://api-sandbox.inditex.com/pubvsearch-sandbox/products?image=" + imageUrl;
+        String apiUrl = "https://api.inditex.com/pubvsearch/products?image=" + imageUrl;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
