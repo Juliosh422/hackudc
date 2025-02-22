@@ -10,9 +10,7 @@ public class ImageSearchController {
 
     @GetMapping("/searchImage")
     public String searchImage(
-            @RequestParam String query,
-        @RequestParam String apiKey,
-            @RequestParam String cx) {
+            @RequestParam String query) {
         try {
             String imageUrl = GoogleImageSearch.getImageFromGoogle(query);
             System.out.println(imageUrl);
