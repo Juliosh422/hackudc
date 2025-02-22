@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.tuempresa</groupId>
@@ -12,26 +16,24 @@
         <version>3.1.5</version>
     </parent>
 
-    <dependencies>
-        <!-- Spring Boot Web -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
+    <properties>
+        <java.version>17</java.version>
+    </properties>
 
-        <!-- Cliente HTTP para llamadas a la API -->
+    <dependencies>
+        <!-- WebFlux para llamadas reactivas (si no usas reactividad, podrías quitarlo) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
-        <!-- OAuth2 para autenticación con la API de Inditex -->
+        <!-- OAuth2 para autenticación -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
 
-        <!-- Lombok para reducir código -->
+        <!-- Lombok para reducir boilerplate -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -43,12 +45,27 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
-    </dependencies>
 
+
+
+            <!-- Jackson para JSON -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+            </dependency>
+
+            <!-- Lombok para reducir código boilerplate -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <scope>provided</scope>
+            </dependency>
+
+    </dependencies>
 
     <build>
         <plugins>
-            <!-- Plugin para empaquetar y ejecutar -->
+            <!-- Plugin de Spring Boot para empaquetado y ejecución -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
