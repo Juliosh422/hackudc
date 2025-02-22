@@ -20,6 +20,7 @@ type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
 const HomeScreen = () => {
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [selectedImageBase64, setSelectedImageBase64] = useState<string | null>(null);
     const [cameraReady, setCameraReady] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const navigation = useNavigation<HomeScreenNavigationProp>();
@@ -44,38 +45,60 @@ const HomeScreen = () => {
         }
     };
 
+    // Update the takePicture function to use base64 data URI
     const takePicture = async () => {
         if (cameraRef.current && !selectedImage) {
-            const options = { quality: 0.5, base64: true };
+            const options = { quality: 0.2, base64: true, doNotSave: true };
             const data: TakePictureResponse = await cameraRef.current.takePictureAsync(options);
-            setSelectedImage(data.uri);
+            if (data.base64) {
+                setSelectedImage(`data:image/jpeg;base64,${data.base64}`);
+                setSelectedImageBase64(data.base64);
+            }
         } else {
             setSelectedImage(null);
+            setSelectedImageBase64(null);
         }
     };
 
+    // Update handleChooseFromGallery to use base64 data URI
     const handleChooseFromGallery = () => {
-        launchImageLibrary({ mediaType: 'photo' }, (response) => {
+        launchImageLibrary({
+            mediaType: 'photo',
+            includeBase64: true,
+            quality: 0.2
+        }, (response) => {
             if (
                 !response.didCancel &&
                 !response.errorCode &&
                 response.assets &&
-                response.assets[0].uri
+                response.assets[0].base64
             ) {
-                setSelectedImage(response.assets[0].uri);
+                const base64 = response.assets[0].base64;
+                setSelectedImage(`data:image/jpeg;base64,${base64}`);
+                setSelectedImageBase64(base64);
             }
         });
     };
 
-    const handleSend = async () => { // Make async
-        if (selectedImage) {
+    const handleSend = async () => {
+        if (selectedImage && selectedImageBase64) {
             setIsLoading(true);
             try {
-                // const imageToSend = selectedImage || 'https://fotografiaprincipiantes.wordpress.com/wp-content/uploads/2015/11/image17.png';
-                const imageToSend = 'https://fotografiaprincipiantes.wordpress.com/wp-content/uploads/2015/11/image17.png';
+                const formData = new FormData();
+                formData.append('image', selectedImageBase64);
 
-                const encodedImage = encodeURIComponent(imageToSend);
+                const uploadResponse = await fetch(
+                    `https://api.imgbb.com/1/upload?key=278e1c47674cc95dfc2c0b33ac53a779`,
+                    { method: 'POST', body: formData }
+                );
 
+                const uploadData = await uploadResponse.json();
+
+                if (!uploadData.success) {
+                    throw new Error('Image upload failed');
+                }
+
+                const encodedImage = encodeURIComponent(uploadData.data.url);
                 const response = await fetch(
                     `http://10.20.27.122:8080/api/search?imageUrl=${encodedImage}`
                 );
@@ -85,11 +108,11 @@ const HomeScreen = () => {
                 const result = await response.json();
                 navigation.navigate('Results', {
                     imageUri: selectedImage,
-                    products: result // Pass API result to results screen
+                    products: result
                 });
             } catch (error) {
-                Alert.alert('Error', 'Couldn\'t load results. Please try again.');
-                console.error('API Error:', error);
+                Alert.alert('Error', 'Couldn\'t process image. Please try again.');
+                console.error('Error:', error);
             } finally {
                 setIsLoading(false);
             }
