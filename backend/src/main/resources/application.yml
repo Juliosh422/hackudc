@@ -23,13 +23,25 @@ server:
     context-path: /
 
 ---
-# Perfil para Wishlist (puerto 8082)
+# Perfil para Wishlist (puerto 8083)
 spring:
   config:
     activate:
       on-profile: wishlist
 server:
   port: 8083
+  address: 0.0.0.0
+  servlet:
+    context-path: /
+
+---
+# Perfil para Google Image Search (puerto 8084)
+spring:
+  config:
+    activate:
+      on-profile: googleimagesearch
+server:
+  port: 8084
   address: 0.0.0.0
   servlet:
     context-path: /

@@ -1,22 +1,30 @@
 package com.inditex.googleimagesearch.controller;
 
 import com.inditex.googleimagesearch.service.GoogleImageSearch;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/images")
 public class ImageSearchController {
 
-    @GetMapping("/searchImage")
-    public String searchImage(
-            @RequestParam String query) {
+    @Autowired
+    private GoogleImageSearch googleImageSearch;
+
+    @GetMapping("/search")
+    public ResponseEntity<String> searchImage(@RequestParam String query) {
         try {
             String imageUrl = GoogleImageSearch.getImageFromGoogle(query);
-            System.out.println(imageUrl);
-            return (imageUrl != null) ? imageUrl : "No se encontraron resultados";
+            if (imageUrl != null) {
+                return ResponseEntity.ok(imageUrl);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron resultados");
+            }
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error al buscar la imagen: " + e.getMessage());
         }
     }
 }

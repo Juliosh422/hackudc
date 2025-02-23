@@ -3,6 +3,8 @@ package com.inditex.googleimagesearch.service;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -10,12 +12,13 @@ import org.json.JSONObject;
 public class GoogleImageSearch {
 
     public static String getImageFromGoogle(String query) throws IOException {
+        String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
         String urlString = "https://www.googleapis.com/customsearch/v1"
-                + "?q=" + query
-                + "&key=AIzaSyCpETXaFFloAWcrud3N7JeXrk9uYZmG1nU"
-                + "&cx=018be8702677740fa"
-                + "&searchType=image"
-                + "&num=1";
+            + "?q=" + encodedQuery
+            + "&key=AIzaSyCpETXaFFloAWcrud3N7JeXrk9uYZmG1nU"
+            + "&cx=018be8702677740fa"
+            + "&searchType=image"
+            + "&num=1";
 
         URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();

@@ -2,15 +2,15 @@
   "id" : null,
   "name" : null,
   "products" : [ {
-    "id" : "43b4db8a-3408-4761-ba66-6e447318b66a",
-    "name" : "SLOGAN PRINT T-SHIRT",
+    "id" : "b5b7c9fe-a6a4-4d58-b9eb-3813f2db13c7",
+    "name" : "HOODED PUFFER JACKET",
     "price" : {
       "currency" : "EUR",
       "value" : {
-        "current" : 19.95
+        "current" : 25.99
       }
     },
-    "link" : "https://zara.com/es/en/-P00679301.html",
+    "link" : "https://zara.com/es/en/-P03046238.html",
     "brand" : "zara"
   } ]
 }

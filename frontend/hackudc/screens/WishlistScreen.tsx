@@ -29,7 +29,6 @@ const WishlistScreen: React.FC = () => {
     const [wishlistItems, setWishlistItems] = useState<string[]>([]);
     const isFocused = useIsFocused();
 
-    // Fetch wishlist when screen is focused
     useEffect(() => {
         const fetchWishlist = async () => {
             try {
@@ -54,7 +53,6 @@ const WishlistScreen: React.FC = () => {
 
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-            // Update local state
             setWishlistProducts((prev) => prev.filter((p) => p.id !== product.id));
             setWishlistItems((prev) => prev.filter((id) => id !== product.id));
         } catch (error) {
@@ -73,6 +71,14 @@ const WishlistScreen: React.FC = () => {
                     {wishlistItems.includes(item.id) ? '❤️' : '🖤'}
                 </Text>
             </TouchableOpacity>
+
+            <Image
+                source={{
+                    uri: `http://10.20.27.122:8084/searchImage?query=${encodeURIComponent(`${item.name} ${item.brand}`)}`
+                }}
+                style={styles.productImage}
+                onError={() => console.log("Failed to load image for", item.id)}
+            />
 
             <Text style={styles.productName}>{item.name}</Text>
             <Text style={styles.brand}>{item.brand.toUpperCase()}</Text>
@@ -114,7 +120,6 @@ const WishlistScreen: React.FC = () => {
     );
 };
 
-// Reuse the same styles from ResultsScreen
 const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
@@ -123,13 +128,6 @@ const styles = StyleSheet.create({
     container: {
         padding: 20,
         paddingBottom: 40,
-    },
-    image: {
-        width: '100%',
-        height: 320,
-        borderRadius: 14,
-        marginBottom: 24,
-        backgroundColor: '#fff',
     },
     titleContainer: {
         flexDirection: 'row',
@@ -155,6 +153,13 @@ const styles = StyleSheet.create({
         elevation: 5,
         borderWidth: 1,
         borderColor: '#ECF0F1',
+    },
+    productImage: {
+        width: '100%',
+        height: 200,
+        borderRadius: 8,
+        marginBottom: 12,
+        backgroundColor: '#fff',
     },
     productName: {
         fontSize: 17,
@@ -198,11 +203,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 14,
         letterSpacing: 0.5,
-    },
-    shareIcon: {
-        width: 24,
-        height: 24,
-        resizeMode: 'contain',
     },
     noResultsText: {
         fontSize: 18,
