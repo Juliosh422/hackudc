@@ -1,0 +1,47 @@
+# Perfil para VisualSearch (puerto 8080)
+spring:
+  config:
+    activate:
+      on-profile: visualsearch
+  security:
+    oauth2:
+      client:
+        registration:
+          inditex:
+            provider: inditex
+            client-id: "oauth-mkplace-oauthzqbuyihxwhmfvdtvizpropro"
+            client-secret: "~dRzP3bw/f/Zj35~"
+            authorization-grant-type: client_credentials
+            scope: technology.catalog.read
+        provider:
+          inditex:
+            token-uri: "https://auth.inditex.com:443/openam/oauth2/itxid/itxidmp/access_token"
+server:
+  port: 8080
+  address: 0.0.0.0
+  servlet:
+    context-path: /
+
+---
+# Perfil para Wishlist (puerto 8083)
+spring:
+  config:
+    activate:
+      on-profile: wishlist
+server:
+  port: 8083
+  address: 0.0.0.0
+  servlet:
+    context-path: /
+
+---
+# Perfil para Google Image Search (puerto 8084)
+spring:
+  config:
+    activate:
+      on-profile: googleimagesearch
+server:
+  port: 8084
+  address: 0.0.0.0
+  servlet:
+    context-path: /
