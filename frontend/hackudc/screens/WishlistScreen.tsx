@@ -69,10 +69,9 @@ const WishlistScreen: React.FC = () => {
                 style={styles.heartButton}
                 onPress={() => toggleWishlist(item)}
             >
-                <Image
-                    source={require('../assets/heart-filled.png')}
-                    style={styles.heartIcon}
-                />
+                <Text style={[styles.heartIcon, { color: wishlistItems.includes(item.id) ? '#E74C3C' : '#000000' }]}>
+                    {wishlistItems.includes(item.id) ? '❤️' : '🖤'}
+                </Text>
             </TouchableOpacity>
 
             <Text style={styles.productName}>{item.name}</Text>
@@ -219,9 +218,7 @@ const styles = StyleSheet.create({
         padding: 8,
     },
     heartIcon: {
-        width: 20,
-        height: 20,
-        tintColor: '#E74C3C',
+        fontSize: 20,
     },
 });
 

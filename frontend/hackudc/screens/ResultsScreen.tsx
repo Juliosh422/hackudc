@@ -69,9 +69,9 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ route }) => {
                     price: {
                         currency: product.price.currency || 'EUR',
                         value: {
-                            current: product.price.value.current
-                        }
-                    }
+                            current: product.price.value.current,
+                        },
+                    },
                 };
 
                 response = await fetch(
@@ -122,15 +122,11 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ route }) => {
                 style={styles.heartButton}
                 onPress={() => toggleWishlist(item)}
             >
-                <Image
-                    source={
-                        wishlistItems.includes(item.id)
-                            ? require('../assets/heart-filled.png')
-                            : require('../assets/heart-outline.png')
-                    }
-                    style={styles.heartIcon}
-                />
+                <Text style={[styles.heartIcon, { color: wishlistItems.includes(item.id) ? '#E74C3C' : '#000000' }]}>
+                    {wishlistItems.includes(item.id) ? '❤️' : '🖤'}
+                </Text>
             </TouchableOpacity>
+
 
             <Text style={styles.productName}>{item.name}</Text>
             <Text style={styles.brand}>{item.brand.toUpperCase()}</Text>
@@ -281,9 +277,7 @@ const styles = StyleSheet.create({
         padding: 8,
     },
     heartIcon: {
-        width: 20,
-        height: 20,
-        tintColor: '#E74C3C',
+        fontSize: 20,
     },
 });
 

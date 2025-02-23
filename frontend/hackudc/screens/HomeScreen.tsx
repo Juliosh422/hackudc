@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import {
     StyleSheet,
     View,
@@ -25,6 +25,12 @@ const HomeScreen = () => {
     const [isLoading, setIsLoading] = useState(false);
     const navigation = useNavigation<HomeScreenNavigationProp>();
     const cameraRef = useRef<RNCamera | null>(null);
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerShown: false,
+        });
+    }, [navigation]);
 
     useEffect(() => {
         requestCameraPermission();
@@ -139,17 +145,15 @@ const HomeScreen = () => {
                 <Image source={{ uri: selectedImage }} style={styles.camera} />
             )}
 
-            <View style={styles.controlsContainer}>
-                <TouchableOpacity
-                    style={styles.wishlistButton}
-                    onPress={() => navigation.navigate('Wishlist')}
-                >
-                    <Image
-                        source={require('../assets/heart-filled.png')}
-                        style={styles.wishlistIcon}
-                    />
-                </TouchableOpacity>
+            {/* Wishlist Button - Top Right */}
+            <TouchableOpacity
+                style={styles.wishlistButton}
+                onPress={() => navigation.navigate('Wishlist')}
+            >
+                <Text style={styles.wishlistIcon}>{'❤️'}</Text>
+            </TouchableOpacity>
 
+            <View style={styles.controlsContainer}>
                 <TouchableOpacity
                     style={styles.galleryButton}
                     onPress={handleChooseFromGallery}>
@@ -252,14 +256,14 @@ const styles = StyleSheet.create({
     },
     wishlistButton: {
         position: 'absolute',
-        top: 40,
-        right: 20,
+        top: 25,
+        right: 25,
         zIndex: 100,
+        padding: 10,
     },
     wishlistIcon: {
-        width: 24,
-        height: 24,
-        tintColor: '#E74C3C',
+        fontSize: 30,
+        color: '#E74C3C',
     },
 });
 
