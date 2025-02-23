@@ -1,10 +1,8 @@
-server:
-  port: 8080
-  address: 0.0.0.0
-  servlet:
-    context-path: /
-
+# Perfil para VisualSearch (puerto 8080)
 spring:
+  config:
+    activate:
+      on-profile: visualsearch
   security:
     oauth2:
       client:
@@ -18,3 +16,20 @@ spring:
         provider:
           inditex:
             token-uri: "https://auth.inditex.com:443/openam/oauth2/itxid/itxidmp/access_token"
+server:
+  port: 8080
+  address: 0.0.0.0
+  servlet:
+    context-path: /
+
+---
+# Perfil para Wishlist (puerto 8082)
+spring:
+  config:
+    activate:
+      on-profile: wishlist
+server:
+  port: 8083
+  address: 0.0.0.0
+  servlet:
+    context-path: /

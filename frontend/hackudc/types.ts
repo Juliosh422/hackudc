@@ -16,4 +16,5 @@ export type RootStackParamList = {
             brand: string;
         }>;
     };
+    Wishlist: undefined;
 };

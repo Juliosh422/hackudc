@@ -10,10 +10,19 @@
         <module name="backend-mobile" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="backend-mobile-parent" target="1.5" />
+      <module name="visual-search" target="17" />
+      <module name="visualsearch" target="17" />
+      <module name="wishlist" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="backend-mobile" options="-parameters" />
+      <module name="visual-search" options="-parameters" />
+      <module name="visualsearch" options="-parameters" />
+      <module name="wishlist" options="-parameters" />
     </option>
   </component>
 </project>

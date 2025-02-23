@@ -7,127 +7,70 @@ import {
     Linking,
     Text,
     TouchableOpacity,
-    Share,
     Alert,
 } from 'react-native';
-import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../types';
-
-type ResultsScreenRouteProp = RouteProp<RootStackParamList, 'Results'>;
+import { useIsFocused } from '@react-navigation/native';
 
 interface Product {
     id: string;
     name: string;
     brand: string;
     price: {
-        currency: string;
         value: {
             current: number;
+            original?: number;
         };
     };
     link: string;
 }
 
-interface ResultsScreenProps {
-    route: ResultsScreenRouteProp;
-}
-
-const ResultsScreen: React.FC<ResultsScreenProps> = ({ route }) => {
-    const { imageUri, products } = route.params;
+const WishlistScreen: React.FC = () => {
+    const [wishlistProducts, setWishlistProducts] = useState<Product[]>([]);
     const [wishlistItems, setWishlistItems] = useState<string[]>([]);
+    const isFocused = useIsFocused();
 
-    // Fetch wishlist on component mount
+    // Fetch wishlist when screen is focused
     useEffect(() => {
         const fetchWishlist = async () => {
             try {
                 const response = await fetch('http://10.20.27.122:8082/api/wishlist');
                 const wishlist: { products: Product[] } = await response.json();
+                setWishlistProducts(wishlist.products);
                 setWishlistItems(wishlist.products.map((p) => p.id));
             } catch (error) {
                 console.error('Error fetching wishlist:', error);
             }
         };
 
-        fetchWishlist();
-    }, []);
+        if (isFocused) fetchWishlist();
+    }, [isFocused]);
 
-    // Toggle product in/out of wishlist
     const toggleWishlist = async (product: Product) => {
-        const isInWishlist = wishlistItems.includes(product.id);
-
         try {
-            let response;
-            if (isInWishlist) {
-                response = await fetch(
-                    `http://10.20.27.122:8082/api/wishlist/products/${product.id}`,
-                    { method: 'DELETE' }
-                );
-            } else {
-                // Create properly structured product object for the backend
-                const productToSend = {
-                    ...product,
-                    price: {
-                        currency: product.price.currency || 'EUR',
-                        value: {
-                            current: product.price.value.current
-                        }
-                    }
-                };
-
-                response = await fetch(
-                    'http://10.20.27.122:8082/api/wishlist/products',
-                    {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(productToSend),
-                    }
-                );
-            }
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            setWishlistItems((prev) =>
-                isInWishlist
-                    ? prev.filter((id) => id !== product.id)
-                    : [...prev, product.id]
+            const response = await fetch(
+                `http://10.20.27.122:8082/api/wishlist/products/${product.id}`,
+                { method: 'DELETE' }
             );
+
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+            // Update local state
+            setWishlistProducts((prev) => prev.filter((p) => p.id !== product.id));
+            setWishlistItems((prev) => prev.filter((id) => id !== product.id));
         } catch (error) {
-            Alert.alert('Error', 'Could not update wishlist');
+            Alert.alert('Error', 'Could not remove from wishlist');
             console.error('Wishlist error:', error);
         }
     };
 
-    // Share products
-    const handleShare = async () => {
-        try {
-            const message = products
-                .map((product) => `${product.name}: ${product.link}`)
-                .join('\n\n');
-
-            await Share.share({
-                message: message,
-                title: 'Check out these similar products!',
-            });
-        } catch (error) {
-            console.error('Error sharing:', error);
-        }
-    };
-
-    // Render each product card
-    const renderProductItem = ({ item }: { item: Product }) => (
-        <View style={styles.productCard}>
+    const renderProductItem = (item: Product) => (
+        <View style={styles.productCard} key={item.id}>
             <TouchableOpacity
                 style={styles.heartButton}
                 onPress={() => toggleWishlist(item)}
             >
                 <Image
-                    source={
-                        wishlistItems.includes(item.id)
-                            ? require('../assets/heart-filled.png')
-                            : require('../assets/heart-outline.png')
-                    }
+                    source={require('../assets/heart-filled.png')}
                     style={styles.heartIcon}
                 />
             </TouchableOpacity>
@@ -137,8 +80,13 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ route }) => {
 
             <View style={styles.priceContainer}>
                 <Text style={styles.currentPrice}>
-                    {item.price.currency} {item.price.value.current.toFixed(2)}
+                    €{item.price.value.current.toFixed(2)}
                 </Text>
+                {item.price.value.original && (
+                    <Text style={styles.originalPrice}>
+                        €{item.price.value.original.toFixed(2)}
+                    </Text>
+                )}
             </View>
 
             <TouchableOpacity
@@ -153,31 +101,21 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ route }) => {
     return (
         <View style={styles.mainContainer}>
             <ScrollView contentContainerStyle={styles.container}>
-                {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
-
                 <View style={styles.titleContainer}>
-                    <Text style={styles.resultsTitle}>Similar Products</Text>
-                    <TouchableOpacity onPress={handleShare}>
-                        <Image
-                            source={require('../assets/share-icon.png')}
-                            style={styles.shareIcon}
-                        />
-                    </TouchableOpacity>
+                    <Text style={styles.resultsTitle}>Your Wishlist</Text>
                 </View>
 
-                {products.length === 0 ? (
-                    <Text style={styles.noResultsText}>No matching products found</Text>
+                {wishlistProducts.length === 0 ? (
+                    <Text style={styles.noResultsText}>No items in your wishlist</Text>
                 ) : (
-                    products.map((product) => (
-                        <View key={product.id}>{renderProductItem({ item: product })}</View>
-                    ))
+                    wishlistProducts.map((product) => renderProductItem(product))
                 )}
             </ScrollView>
         </View>
     );
 };
 
-
+// Reuse the same styles from ResultsScreen
 const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
@@ -287,4 +225,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ResultsScreen;
+export default WishlistScreen;

@@ -1,0 +1,38 @@
+{
+  "id" : null,
+  "name" : null,
+  "products" : [ {
+    "id" : "d1c3ef33-4686-4068-9c4c-bc3ca2d49cfa",
+    "name" : "BASIC COTTON BLEND TRAINING T-SHIRT",
+    "price" : {
+      "currency" : "EUR",
+      "value" : {
+        "current" : 15.95
+      }
+    },
+    "link" : "https://zara.com/es/en/-P00761400.html",
+    "brand" : "zara"
+  }, {
+    "id" : "98205c6d-186c-4053-a51c-78bf05527f52",
+    "name" : "BASIC COTTON BLEND TRAINING T-SHIRT",
+    "price" : {
+      "currency" : "EUR",
+      "value" : {
+        "current" : 15.95
+      }
+    },
+    "link" : "https://zara.com/es/en/-P00761400.html",
+    "brand" : "zara"
+  }, {
+    "id" : "96bff855-0765-47bd-a7f1-64a6ac10195c",
+    "name" : "RUNNING GRAPHIC PRINT T-SHIRT",
+    "price" : {
+      "currency" : "EUR",
+      "value" : {
+        "current" : 19.95
+      }
+    },
+    "link" : "https://zara.com/es/en/-P06224417.html",
+    "brand" : "zara"
+  } ]
+}

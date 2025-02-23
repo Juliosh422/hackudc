@@ -141,6 +141,16 @@ const HomeScreen = () => {
 
             <View style={styles.controlsContainer}>
                 <TouchableOpacity
+                    style={styles.wishlistButton}
+                    onPress={() => navigation.navigate('Wishlist')}
+                >
+                    <Image
+                        source={require('../assets/heart-filled.png')}
+                        style={styles.wishlistIcon}
+                    />
+                </TouchableOpacity>
+
+                <TouchableOpacity
                     style={styles.galleryButton}
                     onPress={handleChooseFromGallery}>
                     <Image source={require('../assets/gallery-icon.png')} style={styles.icon} />
@@ -239,6 +249,17 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 18,
         marginTop: 10,
+    },
+    wishlistButton: {
+        position: 'absolute',
+        top: 40,
+        right: 20,
+        zIndex: 100,
+    },
+    wishlistIcon: {
+        width: 24,
+        height: 24,
+        tintColor: '#E74C3C',
     },
 });
 
